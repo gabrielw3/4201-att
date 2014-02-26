@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+//using System.Threading.Tasks;
 using System.IO;
+
+
 
 
 namespace linmapwin
@@ -13,13 +15,16 @@ namespace linmapwin
         static void Main(string[] args)
         {
 
+
              // Read in every line in the file.
        // using (StreamReader reader = new StreamReader("input.txt"))
+
 
             for (int i = 0; i < args.Length; i++)
             {
                 Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
             } 
+
 
         while(true){
             Console.Write("\nOS:>");
@@ -40,23 +45,29 @@ namespace linmapwin
     
 }
 
+
 class Parser
 {
     string[] validCommands = {"mkdir", "copy", "del", "dir", "cls", "find", "ls", "move", 
     "rmdir", "rename", "replace", "prompt", "exit", "help"};
 
+
     // string fullUserCommand;
     string userCommand;
-    string[] userArgs = new string[7];
+    string[] userArgs = new string[6];
     bool valid = false;
+
 
     public void parse(string fullUserCommand)
     {
 
+
         char[] delim = { ' ' };
+
 
         string[] tokens = fullUserCommand.Split(delim);
         int commandLength = tokens.Length;
+
 
         userCommand = tokens[0];
         for (int i = 1; i < commandLength; i++)
@@ -65,20 +76,26 @@ class Parser
         }
 
 
+
+
     }
+
 
     public string[] getArgs()
     {
         return userArgs;
     }
 
+
     public string getCommand()
     {
         return userCommand;
     }
 
+
     public void isValidCommand()
     {
+
 
         foreach (string command in validCommands)
         {
@@ -86,10 +103,8 @@ class Parser
             {
                 valid = true;
 
-
-
-
             }
+
 
         }
         if (valid)
@@ -107,47 +122,58 @@ class Parser
                     Console.WriteLine("Dir implemented");
                     break;
 
+
                 case "copy":
                     Console.WriteLine("Copy implemented");
                     Copy c = new Copy();
                     c.copy(userArgs);
                     break;
 
+
                 case "del":
                     Console.WriteLine("Delete implemented");
                     break;
+
 
                 case "cls":
                     Console.Clear();
                     break;
 
+
                 case "cd":
                     Console.WriteLine("Change Directory");
                     break;
+
 
                 case "find":
                     Console.WriteLine("Find implemented");
                     break;
 
+
                 case "ls":
                     Console.WriteLine("LS implemented");
                     break;
+
 
                 case "move":
                     Console.WriteLine("move implemented");
                     break;
 
+
                 case "rmdir":
                     Console.WriteLine("rmdir implemented");
                     break;
+
 
                 case "rename":
                     Console.WriteLine("rename implemented");
                     break;
 
+
                 case "replace":
                     Console.WriteLine("replace implemented");
                     break;
+
 
                 case "exit":
                     Console.WriteLine("OS will now close.Goodbye");
@@ -155,9 +181,11 @@ class Parser
                     Environment.Exit(0);
                     break;
 
+
                 case "help":
                     Console.WriteLine("help");
                     break;  
+
 
                 default:
                     Console.WriteLine("Nothing happened");
@@ -170,10 +198,19 @@ class Parser
 
 
 
+
+
+
+
+
+
+
         }
         else Console.WriteLine("invalid");
     }
 }
+
+
 
 
 class Mkdir : Command
@@ -190,6 +227,7 @@ class Mkdir : Command
 "mkdir helloworld\\helloboy\\hellogirl - Creates helloworld,helloboy,hellogirl folders recursively\n" +
 "mkdir helloboy hellogirl helloworld - Creates 3 separate folders in current directory "
 
+
             );
         
         
@@ -198,6 +236,8 @@ class Mkdir : Command
         //string activeDir = @"C:\Users\Nerisha\Documents\OS_public\New folder";
         string activeDir = Directory.GetCurrentDirectory();
         //Create a new subfolder under the current active folder
+
+
 
 
         foreach (string path in args)
@@ -219,7 +259,10 @@ class Mkdir : Command
                     //Console.WriteLine("\n" + activeDir + "'\'" + args[0]);
                     Console.WriteLine("\n" + path + " Directory created. \nLocation: " + newPath);
 
+
                 }
+
+
 
 
             }
@@ -231,79 +274,95 @@ class Mkdir : Command
 
 
 
+
+
+
 class Copy : Command
 {
+
+    public void createFolderIfNone(string path)
+    {
+        if (!System.IO.Directory.Exists(path))
+        {
+            System.IO.Directory.CreateDirectory(path);
+        }
+    }
+    
+    public void copyFileAndOverwrite(string source, string dest){
+        System.IO.File.Copy(source, dest, true);
+    }
+    
+    
+    
+    
     public void copy(string[] args)
     {
         setName("Copy");
         setDescription("Allows copying files to another location");
         setUsage("");
-        string fileName;
-        string sourcePath;
-        string targetPath;
-        string destFile;
+        string fileName = null;
+        string sourcePath = null;
+        string targetPath = null;
+        string destFile = null;
 
 
-        for (int i = 0; i < args.Length; i++)
+
+
+     //   for (int i = 0; i < args.Length; i++)
+        int i = 0;
+        foreach (string arg in args)
         {
-            Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
-
-            for (int j = 0; j < args.Length - 1; j++)
-            {
-
-                if (Object.ReferenceEquals(null, args[i]))
+            
+            //Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
+            Console.WriteLine("Arg[" +i + "] = " + arg);
+            i++;
+            if (Object.ReferenceEquals(null, arg))
                 {
                     Console.WriteLine("Missing Arguments. Check Syntax");
                     break;
+                
                 }
                 else
                 {
 
-                    if (args[1].Equals("from") && args[3].Equals("to") && args[5].Equals("as"))
-                    {
-                        fileName = args[6];
-                        sourcePath = args[2];
-                        targetPath = args[4];
-                        destFile = System.IO.Path.Combine(targetPath, fileName);
 
-                        Console.WriteLine("BANZINNNI");
-                        Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
-                    }
-                    
-
-                    else if (args[1].Equals("from") && args[3].Equals("to"))
+                if (args[1].Equals("from") && args[3].Equals("to"))
                     {
+
 
                         fileName = args[0];
                         sourcePath = args[2];
                         targetPath = args[4];
                         destFile = System.IO.Path.Combine(targetPath, fileName);
 
-
-                         Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
-
-
+                       //  Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
                     }
                    
                     else
                     {
+                       
                         Console.WriteLine("\nInvalid Syntax.");
                         Console.WriteLine("Either do: \tcopy FILENAME from SOURCEPATH to DESTPATH or \n \tcopy FILENAME from SOURCEPATH to DESTHPATH as NEWFILENAME");
                     }
 
-                    //Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+
+                    
                 }
-               
-            }
+          }
 
 
 
-        }
+
+               Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+
+
+
 
 
 
 
         /*
+
 
         string fileName = ; //Name of source file
         string sourcePath = ; 
@@ -312,7 +371,9 @@ class Copy : Command
         string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
         string destFile;
 
+
         foreach (string arg in args){
+
 
             if (arg.Substring(0, 3).Contains(":") | arg.Substring(0, 3).Contains("\\")) // Treat argument as a path if the argument contains colon or backslash
             {
@@ -322,7 +383,11 @@ class Copy : Command
             }
 
 
+
+
         }
+
+
 
 
         */
@@ -332,24 +397,34 @@ class Copy : Command
             System.IO.Directory.CreateDirectory(targetPath);
         }
 
+
         // To copy a file to another location and  
         // overwrite the destination file if it already exists.
         System.IO.File.Copy(sourceFile, destFile, true);
         */
 
+
     }
    
 
+
 }
+
+
+
 
 
 
     abstract class Command
     {
 
+
         string Name; /*name of command*/
         string Description; /*One line description used for the help file. eg. This command can be used to change directories.*/
         string Usage; /*details the switches used (if any). eg. -a abort, -c compile */
+
+
+
 
 
 
@@ -360,20 +435,26 @@ class Copy : Command
         * ***************************/
 
 
-        public string getName()
+
+
+        public string getName()//name of command
         {
             return Name;
         }
 
-        public string getDescription()
+
+        public string getDescription()//
         {
             return Description;
         }
+
 
         public string getUsage()
         {
             return Usage;
         }
+
+
 
 
         /****************************
@@ -386,10 +467,12 @@ class Copy : Command
             this.Name = Name;
         }
 
+
         public void setDescription(string Description)
         {
             this.Description = Description;
         }
+
 
         public void setUsage(string Usage)
         {
@@ -399,4 +482,9 @@ class Copy : Command
 
 
 
+
+
+
+
     }
+
