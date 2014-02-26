@@ -47,7 +47,7 @@ class Parser
 
     // string fullUserCommand;
     string userCommand;
-    string[] userArgs = new string[6];
+    string[] userArgs = new string[7];
     bool valid = false;
 
     public void parse(string fullUserCommand)
@@ -233,14 +233,80 @@ class Mkdir : Command
 
 class Copy : Command
 {
-    public void copy(string[] args){
+    public void copy(string[] args)
+    {
         setName("Copy");
         setDescription("Allows copying files to another location");
         setUsage("");
+        string fileName;
+        string sourcePath;
+        string targetPath;
+        string destFile;
+
+
+        for (int i = 0; i < args.Length; i++)
+        {
+            Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
+
+            for (int j = 0; j < args.Length - 1; j++)
+            {
+
+                if (Object.ReferenceEquals(null, args[i]))
+                {
+                    Console.WriteLine("Missing Arguments. Check Syntax");
+                    break;
+                }
+                else
+                {
+
+                    if (args[1].Equals("from") && args[3].Equals("to") && args[5].Equals("as"))
+                    {
+                        fileName = args[6];
+                        sourcePath = args[2];
+                        targetPath = args[4];
+                        destFile = System.IO.Path.Combine(targetPath, fileName);
+
+                        Console.WriteLine("BANZINNNI");
+                        Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+                    }
+                    
+
+                    else if (args[1].Equals("from") && args[3].Equals("to"))
+                    {
+
+                        fileName = args[0];
+                        sourcePath = args[2];
+                        targetPath = args[4];
+                        destFile = System.IO.Path.Combine(targetPath, fileName);
+
+
+                         Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+
+
+                    }
+                   
+                    else
+                    {
+                        Console.WriteLine("\nInvalid Syntax.");
+                        Console.WriteLine("Either do: \tcopy FILENAME from SOURCEPATH to DESTPATH or \n \tcopy FILENAME from SOURCEPATH to DESTHPATH as NEWFILENAME");
+                    }
+
+                    //Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+                }
+               
+            }
+
+
+
+        }
+
+
+
+
         /*
 
-        string fileName = "test.txt";
-        string sourcePath = Directory.GetCurrentDirectory(); 
+        string fileName = ; //Name of source file
+        string sourcePath = ; 
         //string targetPath = Path.Combine(sourcePath, path);
         string targetPath;
         string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
@@ -270,62 +336,67 @@ class Copy : Command
         // overwrite the destination file if it already exists.
         System.IO.File.Copy(sourceFile, destFile, true);
         */
+
     }
-}
-
-
-
-
-
-
-abstract class Command{
-
-    string Name; /*name of command*/
-    string Description; /*One line description used for the help file. eg. This command can be used to change directories.*/
-    string Usage; /*details the switches used (if any). eg. -a abort, -c compile */
-
-
-
-    /****************************
-    * 
-    * Getters
-    * 
-    * ***************************/
-
-
-    public string getName(){
-        return Name;
-    }
-
-    public string getDescription(){
-        return Description;
-    }
-
-    public string getUsage(){
-        return Usage;
-    }
-
-
-    /****************************
-     * 
-     * Setters
-     * 
-     * ***************************/
-    public void setName(string Name){
-        this.Name = Name;
-    }
-
-    public void setDescription(string Description)
-    {
-        this.Description = Description;
-    }
-
-    public void setUsage(string Usage)
-    {
-        this.Usage = Usage;
-    }
-
-
-
    
+
 }
+
+
+
+    abstract class Command
+    {
+
+        string Name; /*name of command*/
+        string Description; /*One line description used for the help file. eg. This command can be used to change directories.*/
+        string Usage; /*details the switches used (if any). eg. -a abort, -c compile */
+
+
+
+        /****************************
+        * 
+        * Getters
+        * 
+        * ***************************/
+
+
+        public string getName()
+        {
+            return Name;
+        }
+
+        public string getDescription()
+        {
+            return Description;
+        }
+
+        public string getUsage()
+        {
+            return Usage;
+        }
+
+
+        /****************************
+         * 
+         * Setters
+         * 
+         * ***************************/
+        public void setName(string Name)
+        {
+            this.Name = Name;
+        }
+
+        public void setDescription(string Description)
+        {
+            this.Description = Description;
+        }
+
+        public void setUsage(string Usage)
+        {
+            this.Usage = Usage;
+        }
+
+
+
+
+    }
