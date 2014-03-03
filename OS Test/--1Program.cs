@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-//using System.Threading.Tasks;
+using System.Threading.Tasks;
 using System.IO;
-
-
-
 
 
 namespace linmapwin
@@ -16,16 +13,13 @@ namespace linmapwin
         static void Main(string[] args)
         {
 
-
              // Read in every line in the file.
        // using (StreamReader reader = new StreamReader("input.txt"))
-
 
             for (int i = 0; i < args.Length; i++)
             {
                 Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
             } 
-
 
         while(true){
             Console.Write("\nOS:>");
@@ -46,29 +40,23 @@ namespace linmapwin
     
 }
 
-
 class Parser
 {
     string[] validCommands = {"mkdir", "copy", "del", "dir", "cls", "find", "ls", "move", 
     "rmdir", "rename", "replace", "prompt", "exit", "help"};
-
 
     // string fullUserCommand;
     string userCommand;
     string[] userArgs = new string[7];
     bool valid = false;
 
-
     public void parse(string fullUserCommand)
     {
 
-
         char[] delim = { ' ' };
-
 
         string[] tokens = fullUserCommand.Split(delim);
         int commandLength = tokens.Length;
-
 
         userCommand = tokens[0];
         for (int i = 1; i < commandLength; i++)
@@ -77,26 +65,20 @@ class Parser
         }
 
 
-
-
     }
-
 
     public string[] getArgs()
     {
         return userArgs;
     }
 
-
     public string getCommand()
     {
         return userCommand;
     }
 
-
     public void isValidCommand()
     {
-
 
         foreach (string command in validCommands)
         {
@@ -104,8 +86,10 @@ class Parser
             {
                 valid = true;
 
-            }
 
+
+
+            }
 
         }
         if (valid)
@@ -123,58 +107,47 @@ class Parser
                     Console.WriteLine("Dir implemented");
                     break;
 
-
                 case "copy":
                     Console.WriteLine("Copy implemented");
                     Copy c = new Copy();
                     c.copy(userArgs);
                     break;
 
-
                 case "del":
                     Console.WriteLine("Delete implemented");
                     break;
-
 
                 case "cls":
                     Console.Clear();
                     break;
 
-
                 case "cd":
                     Console.WriteLine("Change Directory");
                     break;
-
 
                 case "find":
                     Console.WriteLine("Find implemented");
                     break;
 
-
                 case "ls":
                     Console.WriteLine("LS implemented");
                     break;
-
 
                 case "move":
                     Console.WriteLine("move implemented");
                     break;
 
-
                 case "rmdir":
                     Console.WriteLine("rmdir implemented");
                     break;
-
 
                 case "rename":
                     Console.WriteLine("rename implemented");
                     break;
 
-
                 case "replace":
                     Console.WriteLine("replace implemented");
                     break;
-
 
                 case "exit":
                     Console.WriteLine("OS will now close.Goodbye");
@@ -182,11 +155,9 @@ class Parser
                     Environment.Exit(0);
                     break;
 
-
                 case "help":
                     Console.WriteLine("help");
                     break;  
-
 
                 default:
                     Console.WriteLine("Nothing happened");
@@ -199,19 +170,10 @@ class Parser
 
 
 
-
-
-
-
-
-
-
         }
         else Console.WriteLine("invalid");
     }
 }
-
-
 
 
 class Mkdir : Command
@@ -228,7 +190,6 @@ class Mkdir : Command
 "mkdir helloworld\\helloboy\\hellogirl - Creates helloworld,helloboy,hellogirl folders recursively\n" +
 "mkdir helloboy hellogirl helloworld - Creates 3 separate folders in current directory "
 
-
             );
         
         
@@ -237,8 +198,6 @@ class Mkdir : Command
         //string activeDir = @"C:\Users\Nerisha\Documents\OS_public\New folder";
         string activeDir = Directory.GetCurrentDirectory();
         //Create a new subfolder under the current active folder
-
-
 
 
         foreach (string path in args)
@@ -260,10 +219,7 @@ class Mkdir : Command
                     //Console.WriteLine("\n" + activeDir + "'\'" + args[0]);
                     Console.WriteLine("\n" + path + " Directory created. \nLocation: " + newPath);
 
-
                 }
-
-
 
 
             }
@@ -275,335 +231,79 @@ class Mkdir : Command
 
 
 
-
-
-
 class Copy : Command
 {
-    public void copy(string[] args)
-    {
-
-        setName("Copy");
-        setDescription("Allows copying files to another location");
-        setUsage("");
-        bool agbit = false;
-        string sourceFile = null;
-        string sourceFileName = null;
-        string sourcePath = null;
-        string destinationPath = null;
-        string destinationFile = null;
-        string destinationFileName = null;
-        FileAttributes attr;
-
-        /*
-         * 
-         *  - The following series of if statements checks to verify that all arguments have been entered(not validity verification though)
-         *  Poor implementation. I know.
-         * 
-         */
-     
-
-
-        if (Object.ReferenceEquals(null, args[0]))
-        {
-            agbit = true;
-            goto missingargumenterror;
-        }
-
-        if (Object.ReferenceEquals(null, args[1]))
-        {
-            agbit = true;
-            goto missingargumenterror;
-        }
-
-        if (Object.ReferenceEquals(null, args[2]))
-        {
-            agbit = true;
-            goto missingargumenterror;
-        }
-        
-        if (Object.ReferenceEquals(null, args[3]))
-        {
-            agbit = true;
-            goto missingargumenterror;
-        }
-        
-        if (Object.ReferenceEquals(null, args[4]))
-        {
-            agbit = true;
-            goto missingargumenterror;
-        }
-   /* 
-        if (Object.ReferenceEquals(null, args[5]))
-        {
-            agbit = true;
-            goto missingargumenterror;
-        }
-
-       if (Object.ReferenceEquals(null, args[6]))
-        {
-           agbit = true;
-            goto missingargumenterror;
-        }
-      */
-
-
-        /* Was doing verification like this initially, but, because of it being a loop, it would repeat even though last element was null
-        foreach (string arg in args)
-        {
-            if (Object.ReferenceEquals(null, arg))
-            {
-                agbit = true;
-                goto missingargumenterror;
-            }
-            else{
-                Console.WriteLine("Create a facebook profile");
-            }
-        }*/
-
-
-        sourceFileName = args[0];
-        sourcePath = args[2];
-        destinationPath = args[4];
-
-
-        Console.WriteLine("Source Path:"+sourcePath+"\n Source File Name:"+sourceFileName+"\n Destination Path:"+destinationPath);
-
-      
-
-
-
-
-
-
-       
-
-
-
-
-        if (doesPathExist(sourcePath) == true)
-        {
-         
-
-
-            sourceFile = System.IO.Path.Combine(sourcePath, sourceFileName);
-
-            //  is source file  a directory? or is it a file
-
-            attr = File.GetAttributes(sourceFile);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-            {
-                Console.WriteLine("Its a directory");
-            }
-                
-            else
-            {
-                Console.WriteLine("Its a file");    
-            }
-                
-
-
-            string[] files = Directory.GetFiles(sourcePath, "*.*", SearchOption.TopDirectoryOnly);
-            if (files.Contains(sourceFile))
-            {
-               // Console.WriteLine("File Found");
-
-                destinationFileName = sourceFileName;
-                destinationFile = System.IO.Path.Combine(destinationPath, destinationFileName);
-                /*****DEBUGGING - LISTING ALL FILES IN DIRECTORY *******/
-                foreach (string file in files)
-                {
-                    Console.WriteLine(file);
-                }
-                /****END OF DEBUGGING*****/
-
-                if (doesPathExist(destinationPath) == true)
-                {
-                    System.IO.File.Copy(sourceFile, destinationFile, true);
-                    Console.WriteLine(sourceFile + " copied to " + destinationPath);
-                }
-
-                else //meaning directory does not exist
-                {
-
-
-        if (!System.IO.Directory.Exists(destinationPath))
-        {
-            System.IO.Directory.CreateDirectory(destinationPath);
-            System.IO.File.Copy(sourceFile, destinationFile, true);
-        }
-  
-
-                }
-
-
-            }
-
-            else
-            {
-                Console.WriteLine("File not found");
-            }
-
-        }
-        else Console.WriteLine("Source Path does not exist");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    missingargumenterror:
-        if (agbit==true)
-        {
-            Console.WriteLine("Missing Arguments. Please check help info for proper usage syntax");
-            Console.WriteLine(args.Length);
- 
-           }
-    }
-
-    private bool doesPathExist(string path)
-    {
-        if (System.IO.Directory.Exists(path))
-        {
-            return true;
-        }
-
-        else {
-            
-            return false;
-              }
-    }
-
-
-
-
-    //Wanted to implement this function, but did it with a series of IF statements instead
-    private bool checkIfArgumentsNull(string[] args)
-    {
-        return true;
-    }
-
-}
-
-
-
-
-
-
-
-
-
-
-/*
-
-class Copy : Command
-{
-
-    public void createFolderIfNone(string path)
-    {
-        if (!System.IO.Directory.Exists(path))
-        {
-            System.IO.Directory.CreateDirectory(path);
-        }
-    }
-    
-    public void copyFileAndOverwrite(string source, string dest){
-        System.IO.File.Copy(source, dest, true);
-    }
-    
-    
-    
-    
     public void copy(string[] args)
     {
         setName("Copy");
         setDescription("Allows copying files to another location");
         setUsage("");
-        string fileName = null;
-        string sourcePath = null;
-        string targetPath = null;
-        string destFile = null;
+        string fileName;
+        string sourcePath;
+        string targetPath;
+        string destFile;
 
 
-
-
-     //   for (int i = 0; i < args.Length; i++)
-        int i = 0;
-        foreach (string arg in args)
+        for (int i = 0; i < args.Length; i++)
         {
-            
-            //Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
-            Console.WriteLine("Arg[" +i + "] = " + arg);
-            i++;
+            Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
 
+            for (int j = 0; j < args.Length - 1; j++)
+            {
 
-            if (Object.ReferenceEquals(null, arg))
+                if (Object.ReferenceEquals(null, args[i]))
                 {
                     Console.WriteLine("Missing Arguments. Check Syntax");
                     break;
-                
                 }
                 else
                 {
 
-
-                if (args[1].Equals("from") && args[3].Equals("to"))
+                    if (args[1].Equals("from") && args[3].Equals("to") && args[5].Equals("as"))
                     {
+                        fileName = args[6];
+                        sourcePath = args[2];
+                        targetPath = args[4];
+                        destFile = System.IO.Path.Combine(targetPath, fileName);
 
+                        Console.WriteLine("BANZINNNI");
+                        Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+                    }
+                    
+
+                    else if (args[1].Equals("from") && args[3].Equals("to"))
+                    {
 
                         fileName = args[0];
                         sourcePath = args[2];
                         targetPath = args[4];
                         destFile = System.IO.Path.Combine(targetPath, fileName);
 
-                       //  Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+
+                         Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
+
+
                     }
                    
                     else
                     {
-                       
                         Console.WriteLine("\nInvalid Syntax.");
                         Console.WriteLine("Either do: \tcopy FILENAME from SOURCEPATH to DESTPATH or \n \tcopy FILENAME from SOURCEPATH to DESTHPATH as NEWFILENAME");
                     }
 
-
-                    
+                    //Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
                 }
-          }
+               
+            }
 
 
 
-
-               Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
-
-
-
+        }
 
 
 
 
         /*
-
 
         string fileName = ; //Name of source file
         string sourcePath = ; 
@@ -612,9 +312,7 @@ class Copy : Command
         string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
         string destFile;
 
-
         foreach (string arg in args){
-
 
             if (arg.Substring(0, 3).Contains(":") | arg.Substring(0, 3).Contains("\\")) // Treat argument as a path if the argument contains colon or backslash
             {
@@ -624,48 +322,34 @@ class Copy : Command
             }
 
 
-
-
         }
 
 
-
-
-        
-        
-        //if (!System.IO.Directory.Exists(targetPath))
-        //{
+        */
+        /*
+        if (!System.IO.Directory.Exists(targetPath))
+        {
             System.IO.Directory.CreateDirectory(targetPath);
-//        }
+        }
 
-
-  //      // To copy a file to another location and  
+        // To copy a file to another location and  
         // overwrite the destination file if it already exists.
-    //    System.IO.File.Copy(sourceFile, destFile, true);
-     
-
+        System.IO.File.Copy(sourceFile, destFile, true);
+        */
 
     }
    
 
-
 }
-*/
-
-
 
 
 
     abstract class Command
     {
 
-
         string Name; /*name of command*/
         string Description; /*One line description used for the help file. eg. This command can be used to change directories.*/
         string Usage; /*details the switches used (if any). eg. -a abort, -c compile */
-
-
-
 
 
 
@@ -676,26 +360,20 @@ class Copy : Command
         * ***************************/
 
 
-
-
-        public string getName()//name of command
+        public string getName()
         {
             return Name;
         }
 
-
-        public string getDescription()//
+        public string getDescription()
         {
             return Description;
         }
-
 
         public string getUsage()
         {
             return Usage;
         }
-
-
 
 
         /****************************
@@ -708,12 +386,10 @@ class Copy : Command
             this.Name = Name;
         }
 
-
         public void setDescription(string Description)
         {
             this.Description = Description;
         }
-
 
         public void setUsage(string Usage)
         {
@@ -723,10 +399,4 @@ class Copy : Command
 
 
 
-
-
-
-
     }
-
-
