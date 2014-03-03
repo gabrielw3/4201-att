@@ -23,7 +23,7 @@ namespace linmapwin
 
             for (int i = 0; i < args.Length; i++)
             {
-                Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
+               // Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
             } 
 
 
@@ -207,7 +207,7 @@ class Parser
 
 
         }
-        else Console.WriteLine("invalid");
+        else Console.WriteLine("invalid command.");
     }
 }
 
@@ -301,7 +301,7 @@ class Copy : Command
          *  Poor implementation. I know.
          * 
          */
-     
+
 
 
         if (Object.ReferenceEquals(null, args[0]))
@@ -321,31 +321,41 @@ class Copy : Command
             agbit = true;
             goto missingargumenterror;
         }
-        
+
         if (Object.ReferenceEquals(null, args[3]))
         {
             agbit = true;
             goto missingargumenterror;
         }
-        
+
         if (Object.ReferenceEquals(null, args[4]))
         {
             agbit = true;
             goto missingargumenterror;
         }
-   /* 
-        if (Object.ReferenceEquals(null, args[5]))
-        {
-            agbit = true;
-            goto missingargumenterror;
-        }
 
-       if (Object.ReferenceEquals(null, args[6]))
+    missingargumenterror:
+        if (agbit == true)
         {
-           agbit = true;
-            goto missingargumenterror;
+            Console.WriteLine("Missing Arguments. Please check help info for proper usage syntax");
+            //Console.WriteLine(args.Length);
+
         }
-      */
+        
+        
+        /* 
+             if (Object.ReferenceEquals(null, args[5]))
+             {
+                 agbit = true;
+                 goto missingargumenterror;
+             }
+
+            if (Object.ReferenceEquals(null, args[6]))
+             {
+                agbit = true;
+                 goto missingargumenterror;
+             }
+           */
 
 
         /* Was doing verification like this initially, but, because of it being a loop, it would repeat even though last element was null
@@ -367,24 +377,24 @@ class Copy : Command
         destinationPath = args[4];
 
 
-        Console.WriteLine("Source Path:"+sourcePath+"\n Source File Name:"+sourceFileName+"\n Destination Path:"+destinationPath);
-
-      
+        Console.WriteLine("Source Path:" + sourcePath + "\n Source File Name:" + sourceFileName + "\n Destination Path:" + destinationPath);
 
 
 
 
 
 
-       
+
+
+
 
 
 
 
         if (doesPathExist(sourcePath) == true)
         {
-         
 
+            string fileName = null;
 
             sourceFile = System.IO.Path.Combine(sourcePath, sourceFileName);
 
@@ -393,92 +403,111 @@ class Copy : Command
             attr = File.GetAttributes(sourceFile);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                Console.WriteLine("Its a directory");
-            }
-                
-            else
-            {
-                Console.WriteLine("Its a file");    
-            }
-                
+               // Console.WriteLine("Its a directory");
 
+                string[] files = System.IO.Directory.GetFiles(System.IO.Path.Combine(sourcePath,sourceFileName));
 
-            string[] files = Directory.GetFiles(sourcePath, "*.*", SearchOption.TopDirectoryOnly);
-            if (files.Contains(sourceFile))
-            {
-               // Console.WriteLine("File Found");
-
-                destinationFileName = sourceFileName;
-                destinationFile = System.IO.Path.Combine(destinationPath, destinationFileName);
-                /*****DEBUGGING - LISTING ALL FILES IN DIRECTORY *******/
-                foreach (string file in files)
+                // Copy the files and overwrite destination files if they already exist. 
+                foreach (string s in files)
                 {
-                    Console.WriteLine(file);
-                }
-                /****END OF DEBUGGING*****/
-
-                if (doesPathExist(destinationPath) == true)
-                {
-                    System.IO.File.Copy(sourceFile, destinationFile, true);
-                    Console.WriteLine(sourceFile + " copied to " + destinationPath);
-                }
-
-                else //meaning directory does not exist
-                {
-
-
-        if (!System.IO.Directory.Exists(destinationPath))
-        {
-            System.IO.Directory.CreateDirectory(destinationPath);
-            System.IO.File.Copy(sourceFile, destinationFile, true);
-        }
-  
+                    // Use static Path methods to extract only the file name from the path.
+                    fileName = System.IO.Path.GetFileName(s);
+                    
+                    if (!Directory.Exists(destinationPath))
+                    {
+                        System.IO.Directory.CreateDirectory(destinationPath);
+                    }
+                    destinationFile = System.IO.Path.Combine(destinationPath, fileName);
+                    System.IO.File.Copy(s, destinationFile, true);
+                    
 
                 }
 
-
+                Console.WriteLine(sourceFile + " copied to " + destinationPath);
             }
 
             else
             {
-                Console.WriteLine("File not found");
+              //  Console.WriteLine("Its a file");
+                string[] files = Directory.GetFiles(sourcePath, "*.*", SearchOption.TopDirectoryOnly);
+                if (files.Contains(sourceFile))
+                {
+                    // Console.WriteLine("File Found");
+
+                    destinationFileName = sourceFileName;
+                    destinationFile = System.IO.Path.Combine(destinationPath, destinationFileName);
+                    /*****DEBUGGING - LISTING ALL FILES IN DIRECTORY *******/
+                    foreach (string file in files)
+                    {
+                       // Console.WriteLine(file);
+                    }
+                    /****END OF DEBUGGING*****/
+
+                    if (doesPathExist(destinationPath) == true)
+                    {
+                        System.IO.File.Copy(sourceFile, destinationFile, true);
+                        Console.WriteLine(sourceFile + " copied to " + destinationPath);
+                    }
+
+                    else //meaning directory does not exist
+                    {
+
+
+                        if (!System.IO.Directory.Exists(destinationPath))
+                        {
+                            System.IO.Directory.CreateDirectory(destinationPath);
+                            System.IO.File.Copy(sourceFile, destinationFile, true);
+                        }
+
+
+                    }
+
+
+                }
+
+                else
+                {
+                    Console.WriteLine("File not found");
+                }
+
+
+                if (doesPathExist(sourcePath) == false)
+                {
+                    Console.WriteLine("Source Path does not exist");
+                }
             }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
         }
-        else Console.WriteLine("Source Path does not exist");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    missingargumenterror:
-        if (agbit==true)
-        {
-            Console.WriteLine("Missing Arguments. Please check help info for proper usage syntax");
-            Console.WriteLine(args.Length);
- 
-           }
     }
 
     private bool doesPathExist(string path)
