@@ -84,7 +84,7 @@ static class GlobalClass
 class Parser
 {
     string[] validCommands = {"mkdir", "copy", "del", "dir", "cls", "find", "ls", "move", 
-    "rmdir", "rename", "replace", "prompt", "exit", "help", "cd"};
+    "rmdir", "rename", "replace", "prompt", "exit", "help", "cd", "chdir"};
 
 
     // string fullUserCommand;
@@ -150,13 +150,16 @@ class Parser
 
                     Mkdir m = new Mkdir();
                     m.mkdir(userArgs);
-                    Console.WriteLine(m.getUsage());
+                    //Console.WriteLine(m.getUsage());
 
                     break;
                 case "dir":
                     Console.WriteLine("Dir implemented");
+                    Dir dir = new Dir();
+                    
+                    dir.dir(userArgs);
                     break;
-
+                    
 
                 case "copy":
                     Console.WriteLine("Copy implemented");
@@ -166,9 +169,15 @@ class Parser
 
 
                 case "del":
-                    Console.WriteLine("Delete implemented");
+                    Del del = new Del();
+                    del.del(userArgs[0]);
                     break;
 
+                case "chdir":
+                    Chdir checkDirectory = new Chdir();
+                    checkDirectory.chdir(userArgs);
+                   // Console.WriteLine(chdir);
+                    break;
 
                 case "cls":
                     Console.Clear();
@@ -213,8 +222,8 @@ class Parser
 
 
                 case "exit":
-                    Console.WriteLine("OS will now close.Goodbye");
-                    Console.ReadKey();
+                    Console.WriteLine("OS will now close. Goodbye");
+                    System.Threading.Thread.Sleep(1000);
                     Environment.Exit(0);
                     break;
 
@@ -228,16 +237,6 @@ class Parser
                     Console.WriteLine("Nothing happened");
                     break;
             }
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -268,13 +267,9 @@ class Mkdir : Command
             );
 
 
-        Console.WriteLine("Mkdir implemented");
-        // Specify a "currently active folder"
-        //string activeDir = @"C:\Users\Nerisha\Documents\OS_public\New folder";
+       
+     
         string activeDir = Directory.GetCurrentDirectory();
-        //Create a new subfolder under the current active folder
-
-
 
 
         foreach (string path in args)
@@ -294,7 +289,7 @@ class Mkdir : Command
                 {
                     Directory.CreateDirectory(newPath);
                     //Console.WriteLine("\n" + activeDir + "'\'" + args[0]);
-                    Console.WriteLine("\n" + path + " Directory created. \nLocation: " + newPath);
+                    Console.WriteLine("\n" + path + " Directory created.");
 
 
                 }
@@ -587,14 +582,6 @@ class Cd : Command
         string path = args[0];
 
 
-
-
-
-
-        //Directory.SetCurrentDirectory("C:\\");
-      //  string currDirectory = Directory.GetCurrentDirectory();
-      //  Console.WriteLine(currDirectory);
-
         /*
          * 1. Check , see if directory exists
          * 2. If exists, change the prompt to the directory(by appending to current directory
@@ -636,7 +623,7 @@ class Cd : Command
             GlobalClass.GlobalVar = System.IO.Path.Combine(GlobalClass.GlobalVar, path);
             Directory.SetCurrentDirectory(GlobalClass.GlobalVar);
             
-            Console.WriteLine("THIS IS IT:"+GlobalClass.GlobalVar);
+          //  Console.WriteLine("THIS IS IT:"+GlobalClass.GlobalVar);
         }
         else if (File.Exists(path))
         {
@@ -648,145 +635,47 @@ class Cd : Command
             Console.WriteLine("Folder does not exist");
         }
 
-
-
-
-
-        /*
-         try
-         {
-             if (!File.Exists(path))
-             {
-                 // This statement ensures that the file is created, 
-                 // but the handle is not kept. 
-                 using (FileStream fs = File.Create(path)) { }
-             }
-
-           
-        
-
-         }
-            
-         catch (Exception e)
-         {
-             Console.WriteLine("The process failed: {0}", e.ToString());
-         } */
     }
 }
 
 
-
-
-
-/*
-
-class Copy : Command
+class Chdir : Command
 {
-
-    public void createFolderIfNone(string path)
+    public void chdir(string[] args)
     {
-        if (!System.IO.Directory.Exists(path))
-        {
-            System.IO.Directory.CreateDirectory(path);
-        }
-    }
-    
-    public void copyFileAndOverwrite(string source, string dest){
-        System.IO.File.Copy(source, dest, true);
-    }
-    
-    
-    
-    
-    public void copy(string[] args)
-    {
-        setName("Copy");
-        setDescription("Allows copying files to another location");
+        setName("Chdir");
+        setDescription("Shows current Directory");
         setUsage("");
-        string fileName = null;
-        string sourcePath = null;
-        string targetPath = null;
-        string destFile = null;
 
 
+        string workDir = Directory.GetCurrentDirectory();
+        Console.WriteLine("Current Directory -->>"+"\t"+workDir);
 
 
-     //   for (int i = 0; i < args.Length; i++)
-        int i = 0;
-        foreach (string arg in args)
+    }
+}
+
+class Dir : Command
+{
+    public void dir(string[] args)
+    {
+        setName("Chdir");
+        setDescription("Lists files in a directory");
+        setUsage("");
+
+
+       // string workDir = Directory.GetCurrentDirectory();
+       // Console.WriteLine("Current Directory -->>" + "\t" + workDir);
+
+        switch (args[0])
         {
-            
-            //Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
-            Console.WriteLine("Arg[" +i + "] = " + arg);
-            i++;
+            case "//a":
+                Console.WriteLine("Ack");
+                break;
 
-
-            if (Object.ReferenceEquals(null, arg))
-                {
-                    Console.WriteLine("Missing Arguments. Check Syntax");
-                    break;
-                
-                }
-                else
-                {
-
-
-                if (args[1].Equals("from") && args[3].Equals("to"))
-                    {
-
-
-                        fileName = args[0];
-                        sourcePath = args[2];
-                        targetPath = args[4];
-                        destFile = System.IO.Path.Combine(targetPath, fileName);
-
-                       //  Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
-                    }
-                   
-                    else
-                    {
-                       
-                        Console.WriteLine("\nInvalid Syntax.");
-                        Console.WriteLine("Either do: \tcopy FILENAME from SOURCEPATH to DESTPATH or \n \tcopy FILENAME from SOURCEPATH to DESTHPATH as NEWFILENAME");
-                    }
-
-
-                    
-                }
-          }
-
-
-
-
-               Console.WriteLine(fileName + "\n" + sourcePath + "\n" + targetPath + "\n" + destFile);
-
-
-
-
-
-
-
-        /*
-
-
-        string fileName = ; //Name of source file
-        string sourcePath = ; 
-        //string targetPath = Path.Combine(sourcePath, path);
-        string targetPath;
-        string sourceFile = System.IO.Path.Combine(sourcePath, fileName);
-        string destFile;
-
-
-        foreach (string arg in args){
-
-
-            if (arg.Substring(0, 3).Contains(":") | arg.Substring(0, 3).Contains("\\")) // Treat argument as a path if the argument contains colon or backslash
-            {
-                targetPath = arg;
-               destFile = System.IO.Path.Combine(targetPath, fileName);
-               System.IO.File.Copy(sourceFile, destFile, true);
-            }
-
+            default:
+                Console.WriteLine("nothing happened");
+                break;
 
 
 
@@ -794,30 +683,75 @@ class Copy : Command
 
 
 
-
-        
-        
-        //if (!System.IO.Directory.Exists(targetPath))
-        //{
-            System.IO.Directory.CreateDirectory(targetPath);
-//        }
+    }
+}
 
 
-  //      // To copy a file to another location and  
-        // overwrite the destination file if it already exists.
-    //    System.IO.File.Copy(sourceFile, destFile, true);
-     
 
+class Del : Command
+{
+    string choice;
+    bool confirm = false;
+    public void del(string dPath)
+    {
+        setName("Delete");
+        setDescription("Allows deleting directories and files");
+        setUsage("");
+        string path = dPath;
+
+       // Console.WriteLine("path" + path);
+
+        if (System.IO.Directory.Exists(path))
+        {
+            confirmDelete();
+
+            if (confirm) deleteDirectory(path);
+        }
+
+        else if (System.IO.File.Exists(path))
+        {
+            confirmDelete();
+            if (confirm) deleteFile(path);
+            
+        }
+
+        else Console.WriteLine("Invalid path");
 
     }
-   
 
+    public void deleteFile(string path)
+    {
+        try
+        {
+            System.IO.File.Delete(path);
+        }
+        catch (System.IO.IOException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    public void deleteDirectory(string path)
+    {
+        try
+        {
+            System.IO.Directory.Delete(path);
+        }
+        catch (System.IO.IOException e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    public void confirmDelete()
+    {
+        Console.WriteLine("Are you sure? (Y/N)");
+        choice = Console.ReadLine();
+        confirm = "y".Equals(choice, StringComparison.OrdinalIgnoreCase);
+        Console.WriteLine("\n Deletion Successful");
+    }
 
 }
-*/
-
-
-
 
 
 abstract class Command
