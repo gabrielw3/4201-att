@@ -11,46 +11,80 @@ using System.IO;
 
 namespace linmapwin
 {
+     
     class Program
     {
+
+
+
+      static string workDir = Directory.GetCurrentDirectory();
+
+
+        public string getWorkDir(){
+            return workDir;
+        }
+
+        public void setWorkDir(string path)
+        {
+            workDir = path;
+        }
+
         static void Main(string[] args)
         {
+           
+             
 
 
-             // Read in every line in the file.
-       // using (StreamReader reader = new StreamReader("input.txt"))
+            
+          
+            //Directory.SetCurrentDirectory("C:\\");
+            // Read in every line in the file.
+            // using (StreamReader reader = new StreamReader("input.txt"))
 
 
             for (int i = 0; i < args.Length; i++)
             {
-               // Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
-            } 
+                // Console.WriteLine("Arg[{0}] = [{1}]", i, args[i]);
+            }
 
 
-        while(true){
-            Console.Write("\nOS:>");
-            string line = "hey";
-            line = Console.ReadLine();
-            
-            
-            Parser p = new Parser();
-            p.parse(line);
-            p.isValidCommand();
-            
-            
-            
-            //Console.ReadLine();
+            while (true)
+            {
+                Console.Write(GlobalClass.GlobalVar + ">");
+                string line = "hey";
+                line = Console.ReadLine();
+
+
+                Parser p = new Parser();
+                p.parse(line);
+                p.isValidCommand();
+
+
+
+                //Console.ReadLine();
+            }
         }
     }
-        }
-    
+
 }
 
+
+
+static class GlobalClass
+{
+     private static string workDir = Directory.GetCurrentDirectory();
+    public static string GlobalVar
+    {
+        get { return workDir; }
+        set { workDir = value; }
+
+    }
+}
 
 class Parser
 {
     string[] validCommands = {"mkdir", "copy", "del", "dir", "cls", "find", "ls", "move", 
-    "rmdir", "rename", "replace", "prompt", "exit", "help"};
+    "rmdir", "rename", "replace", "prompt", "exit", "help", "cd"};
 
 
     // string fullUserCommand;
@@ -113,11 +147,11 @@ class Parser
             switch (getCommand().ToLower())
             {
                 case "mkdir":
-                   
+
                     Mkdir m = new Mkdir();
                     m.mkdir(userArgs);
                     Console.WriteLine(m.getUsage());
-             
+
                     break;
                 case "dir":
                     Console.WriteLine("Dir implemented");
@@ -142,7 +176,9 @@ class Parser
 
 
                 case "cd":
-                    Console.WriteLine("Change Directory");
+                    
+                    Cd changeDir = new Cd();
+                    changeDir.cd(userArgs);
                     break;
 
 
@@ -185,7 +221,7 @@ class Parser
 
                 case "help":
                     Console.WriteLine("help");
-                    break;  
+                    break;
 
 
                 default:
@@ -216,12 +252,12 @@ class Parser
 
 class Mkdir : Command
 {
-    public void mkdir(string[] args) 
+    public void mkdir(string[] args)
     {
         setName("mkdir - Make Directory");
         setDescription("Used for creating Directories");
         setUsage(
-            "\nUsage\n"+
+            "\nUsage\n" +
             "Examples\n" +
 "\nmkdir helloworld - Creates subdirectory in current folder\n" +
 "mkdir C:\\helloworld  - Creates 'helloworld' directory on 'C' drive\n" +
@@ -230,8 +266,8 @@ class Mkdir : Command
 
 
             );
-        
-        
+
+
         Console.WriteLine("Mkdir implemented");
         // Specify a "currently active folder"
         //string activeDir = @"C:\Users\Nerisha\Documents\OS_public\New folder";
@@ -267,9 +303,9 @@ class Mkdir : Command
 
 
             }
-            }
-                
-       
+        }
+
+
     }
 }
 
@@ -341,8 +377,8 @@ class Copy : Command
             //Console.WriteLine(args.Length);
 
         }
-        
-        
+
+
         /* 
              if (Object.ReferenceEquals(null, args[5]))
              {
@@ -403,23 +439,23 @@ class Copy : Command
             attr = File.GetAttributes(sourceFile);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
-               // Console.WriteLine("Its a directory");
+                // Console.WriteLine("Its a directory");
 
-                string[] files = System.IO.Directory.GetFiles(System.IO.Path.Combine(sourcePath,sourceFileName));
+                string[] files = System.IO.Directory.GetFiles(System.IO.Path.Combine(sourcePath, sourceFileName));
 
                 // Copy the files and overwrite destination files if they already exist. 
                 foreach (string s in files)
                 {
                     // Use static Path methods to extract only the file name from the path.
                     fileName = System.IO.Path.GetFileName(s);
-                    
+
                     if (!Directory.Exists(destinationPath))
                     {
                         System.IO.Directory.CreateDirectory(destinationPath);
                     }
                     destinationFile = System.IO.Path.Combine(destinationPath, fileName);
                     System.IO.File.Copy(s, destinationFile, true);
-                    
+
 
                 }
 
@@ -428,7 +464,7 @@ class Copy : Command
 
             else
             {
-              //  Console.WriteLine("Its a file");
+                //  Console.WriteLine("Its a file");
                 string[] files = Directory.GetFiles(sourcePath, "*.*", SearchOption.TopDirectoryOnly);
                 if (files.Contains(sourceFile))
                 {
@@ -439,7 +475,7 @@ class Copy : Command
                     /*****DEBUGGING - LISTING ALL FILES IN DIRECTORY *******/
                     foreach (string file in files)
                     {
-                       // Console.WriteLine(file);
+                        // Console.WriteLine(file);
                     }
                     /****END OF DEBUGGING*****/
 
@@ -506,7 +542,7 @@ class Copy : Command
 
 
 
-        
+
         }
     }
 
@@ -517,10 +553,11 @@ class Copy : Command
             return true;
         }
 
-        else {
-            
+        else
+        {
+
             return false;
-              }
+        }
     }
 
 
@@ -537,7 +574,105 @@ class Copy : Command
 
 
 
+class Cd : Command
+{
 
+    public void cd(string[] args)
+    {
+        setName("Cd");
+        setDescription("Allows changing directory on command line");
+        setUsage("");
+
+        
+        string path = args[0];
+
+
+
+
+
+
+        //Directory.SetCurrentDirectory("C:\\");
+      //  string currDirectory = Directory.GetCurrentDirectory();
+      //  Console.WriteLine(currDirectory);
+
+        /*
+         * 1. Check , see if directory exists
+         * 2. If exists, change the prompt to the directory(by appending to current directory
+         * 3. Set current working directory to new path
+         * 4. Add functionality to go to root.
+         * 5. Add functionality to .. go back up 
+         * 
+         */
+
+        
+
+        if (path.Equals(".."))
+        {
+            GlobalClass.GlobalVar = Directory.GetParent(path).ToString();
+               Directory.SetCurrentDirectory(GlobalClass.GlobalVar);
+        }
+
+        else if(path.Equals("\\")){
+             GlobalClass.GlobalVar = Directory.GetDirectoryRoot(path);
+               Directory.SetCurrentDirectory(GlobalClass.GlobalVar);
+        }
+
+        else if (path.Equals("/"))
+        {
+            GlobalClass.GlobalVar = Directory.GetDirectoryRoot(path);
+            Directory.SetCurrentDirectory(GlobalClass.GlobalVar);
+        }
+        
+
+        else if (Directory.Exists(path))
+        {
+
+            //Change directory
+            // workDir = 
+            //Combine path
+
+
+            
+            GlobalClass.GlobalVar = System.IO.Path.Combine(GlobalClass.GlobalVar, path);
+            Directory.SetCurrentDirectory(GlobalClass.GlobalVar);
+            
+            Console.WriteLine("THIS IS IT:"+GlobalClass.GlobalVar);
+        }
+        else if (File.Exists(path))
+        {
+            Console.WriteLine("This is a file.");
+        }
+
+        else if (!Directory.Exists(path))
+        {
+            Console.WriteLine("Folder does not exist");
+        }
+
+
+
+
+
+        /*
+         try
+         {
+             if (!File.Exists(path))
+             {
+                 // This statement ensures that the file is created, 
+                 // but the handle is not kept. 
+                 using (FileStream fs = File.Create(path)) { }
+             }
+
+           
+        
+
+         }
+            
+         catch (Exception e)
+         {
+             Console.WriteLine("The process failed: {0}", e.ToString());
+         } */
+    }
+}
 
 
 
@@ -685,77 +820,77 @@ class Copy : Command
 
 
 
-    abstract class Command
+abstract class Command
+{
+
+
+    string Name; /*name of command*/
+    string Description; /*One line description used for the help file. eg. This command can be used to change directories.*/
+    string Usage; /*details the switches used (if any). eg. -a abort, -c compile */
+
+
+
+
+
+
+    /****************************
+    * 
+    * Getters
+    * 
+    * ***************************/
+
+
+
+
+    public string getName()//name of command
     {
-
-
-        string Name; /*name of command*/
-        string Description; /*One line description used for the help file. eg. This command can be used to change directories.*/
-        string Usage; /*details the switches used (if any). eg. -a abort, -c compile */
-
-
-
-
-
-
-        /****************************
-        * 
-        * Getters
-        * 
-        * ***************************/
-
-
-
-
-        public string getName()//name of command
-        {
-            return Name;
-        }
-
-
-        public string getDescription()//
-        {
-            return Description;
-        }
-
-
-        public string getUsage()
-        {
-            return Usage;
-        }
-
-
-
-
-        /****************************
-         * 
-         * Setters
-         * 
-         * ***************************/
-        public void setName(string Name)
-        {
-            this.Name = Name;
-        }
-
-
-        public void setDescription(string Description)
-        {
-            this.Description = Description;
-        }
-
-
-        public void setUsage(string Usage)
-        {
-            this.Usage = Usage;
-        }
-
-
-
-
-
-
-
-
+        return Name;
     }
+
+
+    public string getDescription()//
+    {
+        return Description;
+    }
+
+
+    public string getUsage()
+    {
+        return Usage;
+    }
+
+
+
+
+    /****************************
+     * 
+     * Setters
+     * 
+     * ***************************/
+    public void setName(string Name)
+    {
+        this.Name = Name;
+    }
+
+
+    public void setDescription(string Description)
+    {
+        this.Description = Description;
+    }
+
+
+    public void setUsage(string Usage)
+    {
+        this.Usage = Usage;
+    }
+
+
+
+
+
+
+
+
+}
 
 
