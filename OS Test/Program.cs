@@ -202,7 +202,8 @@ class Parser
 
 
                 case "move":
-                    Console.WriteLine("move implemented");
+                    Move mov = new Move();
+                    mov.move(userArgs);
                     break;
 
 
@@ -702,8 +703,7 @@ class Rename : Command
         string pathname = Path.GetFullPath(path);
         string pathname2 = Path.GetFullPath(path2);
 
-        //string path = @"c:\Users\Tamara\Desktop\Tam.txt";
-        //string path2 = @"c:\Users\Tamara\Desktop\Tamara.txt";
+        
 
         try
         {
