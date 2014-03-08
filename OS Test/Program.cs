@@ -212,7 +212,9 @@ class Parser
 
 
                 case "rename":
-                    Console.WriteLine("rename implemented");
+                   
+                    Rename r = new Rename();
+                    r.rename(userArgs);
                     break;
 
 
@@ -683,6 +685,116 @@ class Dir : Command
 
 
 
+    }
+}
+
+class Rename : Command
+{
+    public void rename(string[] args)
+    {
+        setName("Rename");
+        setDescription("Changes the name of a file or set of files");
+        setUsage("rename OLDFILENAME NEWFILENAME");
+
+        string path = args[0];
+        string path2 = args[1];
+
+        string pathname = Path.GetFullPath(path);
+        string pathname2 = Path.GetFullPath(path2);
+
+        //string path = @"c:\Users\Tamara\Desktop\Tam.txt";
+        //string path2 = @"c:\Users\Tamara\Desktop\Tamara.txt";
+
+        try
+        {
+            if (!File.Exists(pathname))
+            {
+                // This statement ensures that the file is created,
+                // but the handle is not kept.
+                using (FileStream fs = File.Create(pathname)) { }
+            }
+
+            // Ensure that the target does not exist.
+            if (File.Exists(pathname2))
+                File.Delete(pathname2);
+
+            // Move the file.
+            File.Move(pathname, pathname2);
+            Console.WriteLine("{0} was renamed to {1}.", Path.GetFileName(pathname), Path.GetFileName(pathname2));
+
+            // See if the original exists now.
+            if (File.Exists(pathname))
+            {
+                Console.WriteLine("Error: Rename Unsuccesful.");
+            }
+            else
+            {
+                Console.WriteLine("File Sucessfully Renamed");
+            }
+            
+        }
+        catch (IOException ex)
+        {
+            Console.WriteLine("The process failed: {0}", ex.ToString());
+            //Console.WriteLine(ex); // Write error
+        }
+    }
+
+}
+
+
+
+class Move : Command
+{
+    public void move(string[] args)
+    {
+        setName("Move");
+        setDescription("Allows moving files to another location");
+        setUsage("");
+        //string path;
+        //string path2;
+        //string userInput;
+        Console.WriteLine();
+        string path = args[0];
+        string path2 = args[1];
+        //string[] splitInput = userInput.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        Console.WriteLine(path);
+        Console.WriteLine(path2);
+        /* Console.WriteLine(splitInput[0]);
+       Console.WriteLine(splitInput[1]);
+       path = splitInput[0];
+       path2 = splitInput[1];
+       Console.WriteLine(path);
+       Console.WriteLine(path2);
+       */
+        try
+        {
+            if (!File.Exists(path))
+            {
+                // This statement ensures that the file is created,
+                // but the handle is not kept.
+                using (FileStream fs = File.Create(path)) { }
+            }
+            // Ensure that the target does not exist.
+            if (File.Exists(path2))
+                File.Delete(path2);
+            // Move the file.
+            File.Move(path, path2);
+            Console.WriteLine("{0} was moved to {1}.", path, path2);
+            // See if the original exists now.
+            if (File.Exists(path))
+            {
+                Console.WriteLine("The original file still exists, which is unexpected.");
+            }
+            else
+            {
+                Console.WriteLine("The original file no longer exists, which is expected.");
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("The process failed: {0}", e.ToString());
+        }
     }
 }
 
